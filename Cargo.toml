@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+	"better-routes",
+	"better-routes-macros",
+]
+resolver = "2"
