@@ -94,7 +94,7 @@ impl ToTokens for Routes {
              }| {
                 if let Some(rejection) = rejection.as_ref() {
                     return quote! {
-                        #[derive(TypedPath, Deserialize)]
+                        #[derive(::axum_extra::routing::TypedPath, ::serde::Deserialize)]
                         #[typed_path(#path, rejection(#rejection))]
                         #item_struct
                     };
@@ -102,14 +102,14 @@ impl ToTokens for Routes {
 
                 if let Some(rejection) = global_rejection.as_ref() {
                     return quote! {
-                        #[derive(TypedPath, Deserialize)]
+                        #[derive(::axum_extra::routing::TypedPath, ::serde::Deserialize)]
                         #[typed_path(#path, rejection(#rejection))]
                         #item_struct
                     };
                 }
 
                 quote! {
-                    #[derive(TypedPath, Deserialize)]
+                    #[derive(::axum_extra::routing::TypedPath, ::serde::Deserialize)]
                     #[typed_path(#path)]
                     #item_struct
                 }
@@ -118,13 +118,13 @@ impl ToTokens for Routes {
 
         let get_all_routes_fn = if let Some(state) = state {
             quote! {
-                    fn get_all_routes<T: MethodHandler<#state>>() -> Router<#state> {
+                    fn get_all_routes<T: ::better_routes::MethodHandler<#state>>() -> ::axum::Router<#state> {
                         T::router()
                     }
             }
         } else {
             quote! {
-                    fn get_all_routes<T: MethodHandler>() -> Router {
+                    fn get_all_routes<T: ::better_routes::MethodHandler>() -> ::axum::Router {
                         T::router()
                     }
             }
@@ -139,29 +139,21 @@ impl ToTokens for Routes {
 
         let router_fn = if let Some(state) = state {
             quote! {
-                pub fn router() -> Router<#state> {
-                    let mut app = Router::new();
+                pub fn router() -> ::axum::Router<#state> {
+                    let mut app = ::axum::Router::new();
                     #(#mergers)*
                     app
                 }
             }
         } else {
             quote! {
-                pub fn router() -> Router {
-                    let mut app = Router::new();
+                pub fn router() -> ::axum::Router {
+                    let mut app = ::axum::Router::new();
                     #(#mergers)*
                     app
                 }
             }
         };
-
-        // all imports
-        tokens.extend(quote! {
-            use ::serde::Deserialize;
-            use ::axum::Router;
-            use ::axum_extra::routing::TypedPath;
-            use ::better_routes::MethodHandler;
-        });
 
         tokens.extend(typed_paths);
         tokens.extend(get_all_routes_fn);
