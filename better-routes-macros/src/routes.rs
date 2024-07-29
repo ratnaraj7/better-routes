@@ -1,16 +1,16 @@
 use quote::{quote, ToTokens};
 use syn::parse::{Parse, ParseStream};
-use syn::{Ident, ItemStruct, LitStr, Token};
+use syn::{Ident, ItemStruct, LitStr, Path, Token};
 
 struct Route {
     path: LitStr,
     item_struct: ItemStruct,
-    rejection: Option<Ident>,
+    rejection: Option<Path>,
 }
 
 pub struct Routes {
-    state: Option<Ident>,
-    rejection: Option<Ident>,
+    state: Option<Path>,
+    rejection: Option<Path>,
     routes: Vec<Route>,
 }
 
@@ -48,7 +48,7 @@ impl Parse for Routes {
                 let path: LitStr = input.parse()?;
                 input.parse::<Token![=>]>()?;
                 let item_struct: ItemStruct = input.parse()?;
-                let rejection: Option<Ident> = if input.peek(Token![=>]) {
+                let rejection: Option<Path> = if input.peek(Token![=>]) {
                     input.parse::<Token![=>]>()?;
                     Some(input.parse()?)
                 } else {
