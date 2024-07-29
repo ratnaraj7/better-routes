@@ -2,5 +2,7 @@
 name = "better-routes"
 version = "0.1.0"
 edition = "2021"
+description = "Routes for better-routes"
+license = "MIT"
 
 [dependencies]

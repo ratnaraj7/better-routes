@@ -2,6 +2,8 @@
 name = "better-routes-macros"
 version = "0.1.0"
 edition = "2021"
+description = "Macros for better-routes"
+license = "MIT"
 
 [lib]
 proc-macro = true
