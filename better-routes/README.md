@@ -20,7 +20,7 @@ Add `better_routes` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-better-routes = "0.1.0"
+better-routes = "0.1.2"
 axum = "0.7.5"
 axum-extra = { version = "0.9.3", features = ["typed-routing"] }
 serde = { version = "1.0.204", features = ["derive"] }
