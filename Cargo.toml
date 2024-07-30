@@ -5,3 +5,6 @@ members = [
 	"better-routes-macros",
 ]
 resolver = "2"
+exclude = [
+	"**/*/tests",
+]
