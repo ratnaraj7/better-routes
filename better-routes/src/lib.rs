@@ -25,10 +25,8 @@
 //! use axum::Router;
 //! use axum::http::StatusCode;
 //! use axum::response::IntoResponse;
-//! use axum::response::Response;
 //! use axum::extract::rejection::PathRejection;
 //! use axum::Json;
-//! use std::fmt::Debug;
 //!
 //! // Define a custom rejection type for handling global rejections
 //! #[derive(Default)]
