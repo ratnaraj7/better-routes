@@ -1,0 +1,19 @@
+name: tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'github-actions' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: cargo build --verbose
+      - name: Run tests
+        run: cargo test --verbose
