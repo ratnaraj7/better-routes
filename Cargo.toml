@@ -3,6 +3,7 @@
 members = [
 	"better-routes",
 	"better-routes-macros",
+	"examples/*",
 ]
 resolver = "2"
 exclude = [
