@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.1.0...better-routes-v0.1.1) - 2024-07-30
+
+### Other
+- release
+
 ## [0.1.0](https://github.com/ratnaraj7/better-routes/releases/tag/better-routes-v0.1.0) - 2024-07-30
 
 ### Other
