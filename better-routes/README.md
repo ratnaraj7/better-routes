@@ -1,6 +1,6 @@
 # Better Routes
 
-`better_routes` is a Rust library designed to simplify route management in Axum applications. It provides macros for creating typed routes and method handlers, making route configuration more manageable and type-safe.
+`better_routes` is a Rust library that makes routing in `axum` applications a breeze. With easy-to-use macros, you can create typed paths and quickly link methods to those paths, making your route setup both simple and type-safe.
 
 ## Key Features
 
@@ -8,11 +8,11 @@
   - Define and manage all your routes in a centralized manner using the `routes!` macro.
   - Simplifies route configuration by keeping all route definitions in one place.
 - **Typed Paths**:
-  - Leverage `axum_extra::routing::TypedPath` for type-safe route definitions within the `axum_extra` crate.
-  - Avoid manual string-based routing by using types to define and validate paths and parameters.
+  - Use `axum_extra::routing::TypedPath` with the `typed-routing` feature enabled to type your paths, ensuring type safety and consistency.
+  - Generate URIs directly from these type definitions.
 - **Method Handlers**:
-  - The `method_helper` macro generates `MethodHandler` implementations for your TypedPaths, associating them with their respective handlers, reducing the risk of errors.
-  - Easily create route handlers with method annotations.
+  - The `method_helper` macro generates `MethodHandler` implementations for your typed paths, linking them to their respective handlers and reducing the risk of errors.
+  - Create route handlers easily with method annotations.
 
 ## Installation
 
@@ -29,7 +29,7 @@ tokio = { version = "1.39.2", features = ["macros", "rt-multi-thread"] }
 
 ## Usage
 
-Here’s a simple example demonstrating how to use `better_routes` with `axum` and `axum-extra`.
+Here’s a simple example demonstrating how to use `better_routes`.
 
 ### Example
 
@@ -40,12 +40,17 @@ use better_routes::method_helper;
 use better_routes::routes;
 
 // Define routes using the `routes!` macro.
+// Note: `MethodHandler` is required for typed path structs,
+// and can be implemented using the `#[method_helper]` macro.
+// Without this implementation, the `routes!` macro will panic
+// with a "MethodHandler not implemented" error.
 routes! {
     "/foo/:id" => struct Foo { id : usize },
     "/bar" => struct Bar;,
 }
 
-// Use the `method_helper` macro to implement route handlers for the `Foo` struct.
+// Use the `method_helper` macro to implement route handlers
+// for the `Foo` struct.
 #[method_helper]
 impl Foo {
     #[get]
@@ -54,7 +59,8 @@ impl Foo {
     }
 }
 
-// Use the `method_helper` macro to implement route handlers for the `Bar` struct.
+// Use the `method_helper` macro to implement route handlers
+// for the `Bar` struct.
 #[method_helper]
 impl Bar {
     #[post]
@@ -67,7 +73,7 @@ async fn main() {
     let app = router();
 
     // Generate a URI from the `Foo` instance
-    let foo_uri = Foo { id: 42 }.to_uri(); // This method is provided by TypedPath
+    let foo_uri = Foo { id: 42 }.to_uri();
     println!("foo_uri: {}", foo_uri); // Output: foo_uri: /foo/42
 
     // Start the server
@@ -86,10 +92,12 @@ async fn main() {
 
 ## Documentation
 
-For more advanced usage, including state and rejection handling, please refer to the full documentation or explore additional examples provided in the codebase.
+For more advanced usage, including state and rejection handling, please refer to the full [documentation][docs] or explore additional [examples][examples] provided in the codebase.
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE][license] file for details.
 
 [license]: https://github.com/ratnaraj7/better-routes/blob/main/better-routes/LICENSE
+[examples]: https://github.com/ratnaraj7/better-routes/tree/main/examples
+[docs]: https://docs.rs/better-routes/0.1.1/better_routes/
