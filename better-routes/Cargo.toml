@@ -1,6 +1,6 @@
 [package]
 name = "better-routes"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Routes for better-routes"
 license = "MIT"
@@ -8,7 +8,7 @@ repository = "https://github.com/ratnaraj7/better-routes"
 
 [dependencies]
 axum = "0.7.5"
-better-routes-macros = { version = "0.1.0", path = "../better-routes-macros" }
+better-routes-macros = { version = "0.1.1", path = "../better-routes-macros" }
 
 [dev-dependencies]
 trybuild = "1.0.98"
