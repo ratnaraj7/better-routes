@@ -7,7 +7,7 @@ Crates
 ------
 
 *   **[`better-routes`][src]**: The core library for managing routes.
-*   **[`better-routes-macros`][macro-src]**: Provides macros to simplify route definitions.
+*   **[`better-routes-macros`][macro-src]**: Macros for [`better-routes`][src].
 
 Contributing
 ------------
