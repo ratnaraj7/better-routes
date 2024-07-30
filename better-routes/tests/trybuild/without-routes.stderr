@@ -1,0 +1,10 @@
+error: Missing routes
+  --> tests/trybuild/without-routes.rs:16:1
+   |
+16 | / routes! {
+17 | |     State => State,
+18 | |     Rejection => GlobalRejection,
+19 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `routes` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,0 +1,17 @@
+error: Duplicate Rejection
+  --> tests/trybuild/double-rejection.rs:31:5
+   |
+31 |     Rejection => FooRejection,
+   |     ^^^^^^^^^
+
+error[E0412]: cannot find type `Foo` in this scope
+  --> tests/trybuild/double-rejection.rs:35:6
+   |
+35 | impl Foo {
+   |      ^^^ not found in this scope
+
+error[E0412]: cannot find type `Bar` in this scope
+  --> tests/trybuild/double-rejection.rs:41:6
+   |
+41 | impl Bar {
+   |      ^^^ not found in this scope
