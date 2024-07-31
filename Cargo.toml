@@ -6,6 +6,3 @@ members = [
 	"examples/*",
 ]
 resolver = "2"
-exclude = [
-	"**/tests",
-]

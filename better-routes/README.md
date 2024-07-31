@@ -14,17 +14,16 @@
   - The `method_helper` macro generates `MethodHandler` implementations for your typed paths, linking them to their respective handlers and reducing the risk of errors.
   - Create route handlers easily with method annotations.
 
-## Installation
+Installation
+------------
 
-Add `better_routes` to your `Cargo.toml`:
+To install `better-routes` and the other required dependencies, run:
 
-```toml
-[dependencies]
-better-routes = "0.1.2"
-axum = "0.7.5"
-axum-extra = { version = "0.9.3", features = ["typed-routing"] }
-serde = { version = "1.0.204", features = ["derive"] }
-tokio = { version = "1.39.2", features = ["macros", "rt-multi-thread"] }
+```sh
+cargo add better-routes
+cargo add axum
+cargo add axum-extra --features typed-routing
+cargo add serde --features derive
 ```
 
 ## Usage
@@ -100,4 +99,4 @@ This project is licensed under the MIT License. See the [LICENSE][license] file 
 
 [license]: https://github.com/ratnaraj7/better-routes/blob/main/better-routes/LICENSE
 [examples]: https://github.com/ratnaraj7/better-routes/tree/main/examples
-[docs]: https://docs.rs/better-routes/0.1.1/better_routes/
+[docs]: https://docs.rs/better-routes/latest/better_routes/index.html
