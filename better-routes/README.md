@@ -100,4 +100,4 @@ This project is licensed under the MIT License. See the [LICENSE][license] file 
 
 [license]: https://github.com/ratnaraj7/better-routes/blob/main/better-routes/LICENSE
 [examples]: https://github.com/ratnaraj7/better-routes/tree/main/examples
-[docs]: https://docs.rs/better-routes/0.1.1/better_routes/
+[docs]: https://docs.rs/better-routes/latest/better_routes/index.html
