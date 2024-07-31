@@ -5,7 +5,7 @@ edition = "2021"
 description = "A powerful Rust library designed for generating type-safe and maintainable Axum routers."
 license = "MIT"
 repository = "https://github.com/ratnaraj7/better-routes"
-keywords = ["axum", "router", "routing", "axum-router", "TypedPath", "typed-routing", "centralized", "typed", "routes", "route", "route management", "maintainable"]
+keywords = ["axum", "router", "typed-routing", "centralized", "maintainable"]
 categories = ["development-tools"]
 
 [dependencies]
