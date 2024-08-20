@@ -352,10 +352,10 @@ pub use better_routes_macros::method_helper;
 /// ```
 pub use better_routes_macros::routes;
 
-/// The [`MethodHandler`] trait defines a method for creating a `Router` instance.
+/// The [`MethodHandlers`] trait defines a list of HTTP methods that a route can handle.
 ///
 /// Note: Instead of implementing it directly, you should use the [`method_helper`]
 /// macro to generate the necessary implementations.
-pub trait MethodHandler<S = ()> {
-    fn router() -> axum::Router<S>;
+pub trait MethodHandlers {
+    const METHODS: &'static [axum::http::Method];
 }
