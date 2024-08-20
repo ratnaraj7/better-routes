@@ -119,11 +119,11 @@ impl ToTokens for MethodHelper {
         .into_iter()
         .collect::<HashSet<_>>();
         let diff = all_methods.difference(methods).map(|method| match method {
-            Method::Get => quote! { async fn get(self) {} },
-            Method::Post => quote! { async fn post(self) {} },
-            Method::Put => quote! { async fn put(self) {} },
-            Method::Delete => quote! { async fn delete(self) {} },
-            Method::Patch => quote! { async fn patch(self) {} },
+            Method::Get => quote! { pub async fn get(self) {} },
+            Method::Post => quote! { pub async fn post(self) {} },
+            Method::Put => quote! { pub async fn put(self) {} },
+            Method::Delete => quote! { pub async fn delete(self) {} },
+            Method::Patch => quote! { pub async fn patch(self) {} },
         });
         tokens.extend(quote! {
             #item_impl
