@@ -1,22 +1,25 @@
 use axum::extract::State;
 use axum::Form;
-use axum_extra::routing::{RouterExt, TypedPath};
+use axum_extra::routing::TypedPath;
 use better_routes::method_helper;
 use serde::Deserialize;
 
-use crate::routes::{Todo, TodoWithId};
 use crate::views::Row;
 use crate::{AppState, Status};
 
 #[derive(Deserialize)]
-struct CreateTodoPayload {
+pub struct CreateTodoPayload {
     name: String,
 }
+
+#[derive(Deserialize)]
+pub struct Todo;
 
 #[method_helper(AppState)]
 impl Todo {
     #[post]
-    async fn create_todo(
+    #[allow(unused)]
+    pub async fn create_todo(
         self,
         State(AppState { db }): State<AppState>,
         Form(CreateTodoPayload { name }): Form<CreateTodoPayload>,
@@ -45,15 +48,21 @@ impl Todo {
 }
 
 #[derive(Deserialize)]
-struct UpdateTodoPayload {
+pub struct UpdateTodoPayload {
     name: String,
     status: Status,
+}
+
+#[derive(Deserialize)]
+pub struct TodoWithId {
+    pub id: usize,
 }
 
 #[method_helper(AppState)]
 impl TodoWithId {
     #[put]
-    async fn update_todo(
+    #[allow(unused)]
+    pub async fn update_todo(
         self,
         State(AppState { db }): State<AppState>,
         Form(UpdateTodoPayload { name, status }): Form<UpdateTodoPayload>,
@@ -70,7 +79,8 @@ impl TodoWithId {
     }
 
     #[delete]
-    async fn delete_todo(self, State(AppState { db }): State<AppState>) {
+    #[allow(unused)]
+    pub async fn delete_todo(self, State(AppState { db }): State<AppState>) {
         db.lock().await.remove(&self.id);
     }
 }

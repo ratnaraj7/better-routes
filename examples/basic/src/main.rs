@@ -2,15 +2,14 @@ use std::collections::HashMap;
 use std::fmt::Display;
 use std::sync::Arc;
 
-use askama_axum::IntoResponse;
 use axum::extract::Request;
 use axum::http::StatusCode;
 use axum::middleware::{from_fn, Next};
-use axum::response::Response;
+use axum::response::{IntoResponse, Response};
 use serde::Deserialize;
 use tokio::sync::Mutex;
 
-use routes::router;
+use self::routes::AllRoutes;
 
 mod routes;
 mod views;
@@ -37,7 +36,7 @@ struct AppState {
 
 #[tokio::main]
 async fn main() {
-    let r = router();
+    let r = AllRoutes::routes();
     let r = r.layer(from_fn(validate_req));
     let tcp_listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
