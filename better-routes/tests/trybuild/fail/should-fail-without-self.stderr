@@ -1,0 +1,5 @@
+error: First argument must be self
+  --> tests/trybuild/fail/should-fail-without-self.rs:10:11
+   |
+10 |     async fn handle_get() {}
+   |           ^^

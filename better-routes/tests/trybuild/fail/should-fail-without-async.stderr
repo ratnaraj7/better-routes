@@ -1,0 +1,5 @@
+error: This method must be async
+  --> tests/trybuild/fail/should-fail-without-async.rs:10:5
+   |
+10 |     fn handle_get(self) {}
+   |     ^^
