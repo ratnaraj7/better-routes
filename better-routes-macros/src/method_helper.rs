@@ -58,6 +58,15 @@ impl Parse for MethodHelper {
                             ));
                         }
                         let mut fn_ = fn_.clone();
+                        const RESERVED_METHODS: &[&str] =
+                            &["get", "post", "put", "delete", "patch"];
+                        // Check if the identifier is a reserved method name
+                        if RESERVED_METHODS.contains(&fn_.sig.ident.to_string().as_str()) {
+                            return Err(syn::Error::new(
+                                fn_.sig.ident.span(),
+                                "This method name is reserved",
+                            ));
+                        }
                         match method {
                             Method::Get => fn_.sig.ident = format_ident!("get"),
                             Method::Post => fn_.sig.ident = format_ident!("post"),
