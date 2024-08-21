@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0](https://github.com/ratnaraj7/better-routes/compare/better-routes-macros-v0.1.1...better-routes-macros-v0.2.0) - 2024-08-21
+
+### Added
+- [**breaking**] use path of struct instead of struct
+
+### Fixed
+- add error for #[method_helper] with args
+- make diff method handlers pub
+
+### Other
+- check reserve methods
+
 ## [0.1.1](https://github.com/ratnaraj7/better-routes/compare/better-routes-macros-v0.1.0...better-routes-macros-v0.1.1) - 2024-07-30
 
 ### Other
