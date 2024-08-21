@@ -1,0 +1,13 @@
+error[E0308]: mismatched types
+  --> tests/trybuild/fail/should-fail-with-invalid-state.rs:17:13
+   |
+17 |     name => FooPath,
+   |             ^^^^^^^
+   |             |
+   |             expected `Router`, found `Router<FooState>`
+   |             expected `Router` because of return type
+18 |     "/:id" => Foo
+   |               --- here the type of `r` is inferred to be `Router<FooState>`
+   |
+   = note: expected struct `Router<()>`
+              found struct `Router<FooState>`

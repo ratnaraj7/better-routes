@@ -1,13 +1,17 @@
 use axum::extract::rejection::PathRejection;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
+use axum_extra::routing::RouterExt;
 use better_routes::routes;
 
 use crate::AppState;
 
+use self::handlers::api::{Todo, TodoWithId};
+use self::handlers::pages::Home;
+
 mod handlers;
 
-struct GlobalRejection;
+pub struct GlobalRejection;
 
 impl From<PathRejection> for GlobalRejection {
     fn from(_: PathRejection) -> Self {
@@ -23,9 +27,10 @@ impl IntoResponse for GlobalRejection {
 }
 
 routes! {
-    State => AppState,
-    Rejection => GlobalRejection,
-    "/" => struct Home {},
-    "/api/todo" => struct Todo {},
-    "/api/todo/:id" => struct TodoWithId { id: usize },
+    name => pub AllRoutes,
+    state => AppState,
+    rejection => GlobalRejection,
+    "/" => Home,
+    "/api/todo" => Todo,
+    "/api/todo/:id" => TodoWithId,
 }

@@ -1,2 +1,2 @@
-mod api;
-mod pages;
+pub mod api;
+pub mod pages;
