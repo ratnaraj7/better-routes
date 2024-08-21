@@ -1,8 +1,11 @@
-use origami_engine::{og, Layout, Origami};
+use std::fmt::Display;
 
-use crate::Status;
+use origami_engine::{og, Layout, Origami};
+use serde::Deserialize;
+use tailwind_fuse::*;
 
 struct Main;
+
 og! {
     layout MainLayout,
     Main =>
@@ -26,7 +29,7 @@ og! {
                   "#!
             }
         }
-        body class="h-screen bg-slate-900 overflow-hidden px-10 py-10 flex" {
+        body class="min-h-screen bg-slate-900 px-10 py-10 flex" {
             block body;
         }
     }
@@ -67,7 +70,7 @@ og! {
                     div class="w-full h-full flex" {
                         form id="dialog-form" class="m-auto w-[30rem] p-4 bg-slate-800 rounded-md space-y-4" {
                             input id="dialog-input" "type"="text" required autocomplete="off" name="name" placeholder="Name" class="w-full px-4 py-2 rounded-md bg-slate-700 text-white focus:outline-none";
-                            select class="w-full px-4 py-2 rounded-md bg-slate-700 text-white focus:outline-none" name="status" {
+                            select id="dialog-select" class="w-full px-4 py-2 rounded-md bg-slate-700 text-white focus:outline-none" name="status" {
                                 option "value"="Todo" {
                                     "Todo"
                                 }
@@ -89,6 +92,7 @@ og! {
                         function show_dialog(id, update_url, name, status) {
                             document.querySelector("dialog").showModal();
                             document.getElementById("dialog-input").value = name;
+                            document.getElementById("dialog-select").querySelector(`option[value="${status}"]`).selected = true;
                             document.getElementById("dialog-form").onsubmit = function(evt) {
                                 evt.preventDefault();
                                 const values = htmx.values(htmx.find('#dialog-form'));
@@ -128,6 +132,29 @@ og! {
     }
 }
 
+#[derive(TwClass)]
+#[tw(class = "px-6 py-4 font-medium text-gray-900")]
+pub struct StatusClass {
+    pub status: Status,
+}
+
+#[derive(Deserialize, TwVariant)]
+pub enum Status {
+    #[tw(class = "text-green-500")]
+    Todo,
+    #[tw(default, class = "text-red-500 line-through")]
+    Done,
+}
+
+impl Display for Status {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Status::Todo => write!(f, "Todo"),
+            Status::Done => write!(f, "Done"),
+        }
+    }
+}
+
 pub struct Row {
     pub id: usize,
     pub name: String,
@@ -140,12 +167,7 @@ og! {
     Row =>
     tr id=(format!("row-{}", self.id).as_str()) class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" {
         th scope="row"
-            class=(
-                match self.status {
-                    Status::Done => "px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-red-500 line-through flex",
-                    Status::Todo => "px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-green-500 flex",
-                }
-            ) {
+            class=(StatusClass { status: self.status }.to_class().as_str()) {
             (self.name.as_str());
         }
         td class="px-6 py-4 space-x-2" {

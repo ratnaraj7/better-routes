@@ -1,33 +1,17 @@
 use std::collections::HashMap;
-use std::fmt::Display;
 use std::sync::Arc;
 
 use axum::extract::Request;
 use axum::http::StatusCode;
 use axum::middleware::{from_fn, Next};
 use axum::response::{IntoResponse, Response};
-use serde::Deserialize;
 use tokio::sync::Mutex;
 
 use self::routes::AllRoutes;
+use self::views::Status;
 
 mod routes;
 mod views;
-
-#[derive(Clone, Deserialize)]
-enum Status {
-    Todo,
-    Done,
-}
-
-impl Display for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Status::Todo => write!(f, "Todo"),
-            Status::Done => write!(f, "Done"),
-        }
-    }
-}
 
 #[derive(Clone)]
 struct AppState {

@@ -12,3 +12,4 @@ tokio = { version = "1.39.2", features = ["macros", "rt-multi-thread"] }
 better-routes = { path = "../../better-routes" }
 origami-engine = { version = "0.1.0-alpha.1", features = ["axum", "html-escape"] }
 html-escape = "0.2.13"
+tailwind_fuse = { version = "0.3.1", features = ["variant"] }
