@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.1.4...better-routes-v0.2.0) - 2024-08-21
+
+### Added
+- [**breaking**] use path of struct instead of struct
+
+### Other
+- Update README.md
+- move dev-deps to deps
+- update example
+- update tests
+
 ## [0.1.4](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.1.3...better-routes-v0.1.4) - 2024-07-31
 
 ### Other
