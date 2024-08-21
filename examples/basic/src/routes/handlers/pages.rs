@@ -11,7 +11,7 @@ use super::api::{Todo, TodoWithId};
 #[derive(Deserialize)]
 pub struct Home;
 
-#[method_helper(AppState)]
+#[method_helper]
 impl Home {
     #[get]
     #[allow(unused)]

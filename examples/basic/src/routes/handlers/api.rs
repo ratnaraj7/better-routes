@@ -15,7 +15,7 @@ pub struct CreateTodoPayload {
 #[derive(Deserialize)]
 pub struct Todo;
 
-#[method_helper(AppState)]
+#[method_helper]
 impl Todo {
     #[post]
     #[allow(unused)]
@@ -58,7 +58,7 @@ pub struct TodoWithId {
     pub id: usize,
 }
 
-#[method_helper(AppState)]
+#[method_helper]
 impl TodoWithId {
     #[put]
     #[allow(unused)]
