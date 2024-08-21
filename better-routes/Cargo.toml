@@ -10,16 +10,12 @@ categories = ["development-tools"]
 
 [dependencies]
 axum = "0.7.5"
+serde = { version = "1.0.204", features = ["derive"] }
+axum-extra = { version = "0.9.3", features = ["typed-routing"] }
 better-routes-macros = { version = "0.1.1", path = "../better-routes-macros" }
 
 [dev-dependencies]
 trybuild = "1.0.98"
-axum-extra = { version = "0.9.3", features = ["typed-routing"] }
-serde = { version = "1.0.204", features = ["derive"] }
 tokio = { version = "1.39.2", features = ["rt-multi-thread", "macros"] }
 tower = "0.4.13"
 http-body-util = "0.1.2"
-
-[[test]]
-name = "tests"
-path = "tests/all.rs"
