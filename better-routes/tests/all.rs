@@ -1,9 +1,10 @@
 use axum::body::Body;
 use axum::extract::rejection::PathRejection;
-use axum::http::{Request, StatusCode};
+use axum::extract::Request;
+use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum_extra::routing::RouterExt;
-use better_routes::{method_helper, routes};
+use better_routes::routes;
 use http_body_util::BodyExt;
 use serde::Deserialize;
 use tower::ServiceExt;
@@ -27,15 +28,12 @@ fn make_request(path: &'static str, method: &'static str) -> Request<Body> {
 async fn should_only_allow_get_request() {
     #[derive(Deserialize)]
     struct HomePath;
+    async fn home(_: HomePath) {}
     routes! {
         name => AllRoutes,
-        "/" => HomePath,
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[get]
-        async fn home(self) {}
+        "/" => HomePath {
+            get => home
+        },
     }
     let router = AllRoutes::routes();
     let get_req = make_request("/", "GET");
@@ -59,15 +57,12 @@ async fn should_only_allow_get_request() {
 async fn should_only_allow_post_request() {
     #[derive(Deserialize)]
     struct HomePath;
+    async fn home(_: HomePath) {}
     routes! {
         name => AllRoutes,
-        "/" => HomePath,
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[post]
-        async fn home(self) {}
+        "/" => HomePath {
+            post => home
+        },
     }
     let router = AllRoutes::routes();
     let get_req = make_request("/", "GET");
@@ -91,15 +86,12 @@ async fn should_only_allow_post_request() {
 async fn should_only_allow_put_request() {
     #[derive(Deserialize)]
     struct HomePath;
+    async fn home(_: HomePath) {}
     routes! {
         name => AllRoutes,
-        "/" => HomePath,
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[put]
-        async fn home(self) {}
+        "/" => HomePath {
+            put => home
+        },
     }
     let router = AllRoutes::routes();
     let get_req = make_request("/", "GET");
@@ -123,15 +115,12 @@ async fn should_only_allow_put_request() {
 async fn should_only_allow_del_request() {
     #[derive(Deserialize)]
     struct HomePath;
+    async fn home(_: HomePath) {}
     routes! {
         name => AllRoutes,
-        "/" => HomePath,
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[delete]
-        async fn home(self) {}
+        "/" => HomePath{
+            delete => home
+        },
     }
     let router = AllRoutes::routes();
     let get_req = make_request("/", "GET");
@@ -155,15 +144,12 @@ async fn should_only_allow_del_request() {
 async fn should_only_allow_patch_request() {
     #[derive(Deserialize)]
     struct HomePath;
+    async fn home(_: HomePath) {}
     routes! {
         name => AllRoutes,
-        "/" => HomePath,
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[patch]
-        async fn home(self) {}
+        "/" => HomePath{
+            patch => home
+        },
     }
     let router = AllRoutes::routes();
     let get_req = make_request("/", "GET");
@@ -201,16 +187,13 @@ async fn should_reject_with_global_rejection() {
     struct HomePath {
         id: usize,
     }
+    async fn home(_: HomePath) {}
     routes! {
         name => AllRoutes,
         rejection => GlobalRejection,
-        "/:id" => HomePath,
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[post]
-        async fn home(self) {}
+        "/:id" => HomePath{
+            post => home
+        },
     }
     let router = AllRoutes::routes();
     let get_req = make_request("/123", "GET");
@@ -263,27 +246,21 @@ async fn should_reject_with_route_specific_rejection() {
     struct HomePath {
         id: usize,
     }
+    async fn home(_: HomePath) {}
     #[derive(Deserialize)]
     struct UserPath {
         id: usize,
     }
+    async fn user(_: UserPath) {}
     routes! {
         name => AllRoutes,
         rejection => GlobalRejection,
-        "/:id" => HomePath,
-        "/user/:id" => UserPath => UserRejection
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[post]
-        async fn home(self) {}
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl UserPath {
-        #[post]
-        async fn user(self) {}
+        "/:id" => HomePath{
+            post => home
+        },
+        "/user/:id" => rejection UserRejection => UserPath{
+            post => user
+        }
     }
     let router = AllRoutes::routes();
     let post_req = make_request("/123", "POST");
@@ -318,16 +295,13 @@ async fn should_capture_wildcard() {
     struct HomePath {
         other: String,
     }
+    async fn home(home_path: HomePath) -> String {
+        home_path.other
+    }
     routes! {
         name => AllRoutes,
-        "/*other" => HomePath
-    }
-    #[method_helper]
-    #[allow(dead_code)]
-    impl HomePath {
-        #[post]
-        async fn home(self) -> String {
-            self.other
+        "/*other" => HomePath{
+            post => home
         }
     }
     let router = AllRoutes::routes();
@@ -335,4 +309,34 @@ async fn should_capture_wildcard() {
     let post_res = router.clone().oneshot(post_req).await.unwrap();
     let body = post_res.into_body().collect().await.unwrap().to_bytes();
     assert_eq!(&body[..], b"hello/world");
+}
+
+#[tokio::test]
+async fn all() {
+    #[derive(Deserialize)]
+    struct Home {
+        id: usize,
+        rest: String,
+    }
+
+    async fn get_some(_: About) {}
+    async fn get_som(_: Home) {}
+
+    #[derive(Deserialize)]
+    struct About;
+
+    async fn get_about(_: About) {}
+
+    routes! {
+        name => AllRoutes,
+        "/:id/*rest" => Home {
+            get => get_som,
+            post => get_som
+        },
+        "/about" => About {
+            get => get_about
+        },
+    }
+
+    let _r = AllRoutes::routes();
 }
