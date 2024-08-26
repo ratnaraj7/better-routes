@@ -2,12 +2,17 @@ use proc_macro2::Span;
 use quote::{format_ident, quote, quote_spanned, ToTokens};
 use syn::parse::{Parse, ParseStream};
 use syn::spanned::Spanned;
-use syn::{Ident, LitStr, Path, Token, Visibility};
+use syn::{braced, Ident, LitStr, Path, Token, Visibility};
 
 mod kw {
+    syn::custom_keyword!(name);
     syn::custom_keyword!(state);
     syn::custom_keyword!(rejection);
-    syn::custom_keyword!(name);
+    syn::custom_keyword!(get);
+    syn::custom_keyword!(post);
+    syn::custom_keyword!(put);
+    syn::custom_keyword!(patch);
+    syn::custom_keyword!(delete);
 }
 
 struct Route {
@@ -15,6 +20,11 @@ struct Route {
     segments: Vec<Segment>,
     path_struct: Path,
     rejection: Option<Path>,
+    get_handler: Option<Path>,
+    post_handler: Option<Path>,
+    put_handler: Option<Path>,
+    patch_handler: Option<Path>,
+    delete_handler: Option<Path>,
 }
 
 pub struct Routes {
@@ -64,15 +74,86 @@ impl Parse for Routes {
             }
             let path: LitStr = input.parse()?;
             input.parse::<Token![=>]>()?;
-            let path_struct: Path = input.parse()?;
-            let rejection: Option<Path> = if input.peek(Token![=>]) {
+            let rejection: Option<Path> = if input.peek(kw::rejection) {
+                input.parse::<kw::rejection>()?;
+                let rejection = Some(input.parse()?);
                 input.parse::<Token![=>]>()?;
-                Some(input.parse()?)
+                rejection
             } else {
                 None
             };
+            let path_struct: Path = input.parse()?;
+            let mut get_handler = None;
+            let mut post_handler = None;
+            let mut put_handler = None;
+            let mut patch_handler = None;
+            let mut delete_handler = None;
+            let mut count2 = 0;
+            let content;
+            let _ = braced!(content in input);
+            if content.is_empty() {
+                return Err(syn::Error::new(
+                    path_struct.span(),
+                    "expected at least one handler",
+                ));
+            }
+            while !content.is_empty() {
+                if count2 > 0 {
+                    content.parse::<Token![,]>()?;
+                    if content.is_empty() {
+                        break;
+                    }
+                }
+                if content.peek(kw::get) {
+                    content.parse::<kw::get>()?;
+                    content.parse::<Token![=>]>()?;
+                    if get_handler.is_some() {
+                        return Err(syn::Error::new(content.span(), "duplicate get handler"));
+                    }
+                    get_handler = Some(content.parse()?);
+                }
+                if content.peek(kw::post) {
+                    content.parse::<kw::post>()?;
+                    content.parse::<Token![=>]>()?;
+                    if post_handler.is_some() {
+                        return Err(syn::Error::new(content.span(), "duplicate post handler"));
+                    }
+                    post_handler = Some(content.parse()?);
+                }
+                if content.peek(kw::put) {
+                    content.parse::<kw::put>()?;
+                    content.parse::<Token![=>]>()?;
+                    if put_handler.is_some() {
+                        return Err(syn::Error::new(content.span(), "duplicate put handler"));
+                    }
+                    put_handler = Some(content.parse()?);
+                }
+                if content.peek(kw::patch) {
+                    content.parse::<kw::patch>()?;
+                    content.parse::<Token![=>]>()?;
+                    if patch_handler.is_some() {
+                        return Err(syn::Error::new(content.span(), "duplicate patch handler"));
+                    }
+                    patch_handler = Some(content.parse()?);
+                }
+                if content.peek(kw::delete) {
+                    content.parse::<kw::delete>()?;
+                    content.parse::<Token![=>]>()?;
+                    if delete_handler.is_some() {
+                        return Err(syn::Error::new(content.span(), "duplicate delete handler"));
+                    }
+                    delete_handler = Some(content.parse()?);
+                }
+
+                count2 += 1;
+            }
             let segments = parse_path(&path)?;
             routes.push(Route {
+                get_handler,
+                post_handler,
+                put_handler,
+                patch_handler,
+                delete_handler,
                 path,
                 segments,
                 path_struct,
@@ -139,6 +220,11 @@ impl ToTokens for Routes {
                  segments,
                  path_struct,
                  rejection,
+                 get_handler,
+                 post_handler,
+                 put_handler,
+                 patch_handler,
+                 delete_handler,
              }| {
                 let format_str = format_str_from_path(segments);
                 let captures = captures_from_path(segments);
@@ -206,39 +292,46 @@ impl ToTokens for Routes {
                         }
                     }
                 });
-                routes_fn.push(quote_spanned! {
-                    path_struct.span() =>
-                    for method in <#path_struct as ::better_routes::MethodHandlers>::METHODS {
-                        match *method {
-                            ::axum::http::Method::GET => {
-                                r = r.typed_get(#path_struct::get);
-                            }
-                            ::axum::http::Method::POST => {
-                                r = r.typed_post(#path_struct::post);
-                            }
-                            ::axum::http::Method::PUT => {
-                                r = r.typed_put(#path_struct::put);
-                            }
-                            ::axum::http::Method::PATCH => {
-                                r = r.typed_patch(#path_struct::patch);
-                            }
-                            ::axum::http::Method::DELETE => {
-                                r = r.typed_delete(#path_struct::delete);
-                            }
-                            _ => {
-                                unreachable!();
-                            }
-                        }
-                    }
-                });
+
+                if let Some(get_handler) = get_handler {
+                    routes_fn.push(quote_spanned! {
+                        get_handler.span() =>
+                        r = r.typed_get::<_,_,#path_struct>(#get_handler);
+                    })
+                }
+                if let Some(post_handler) = post_handler {
+                    routes_fn.push(quote_spanned! {
+                        post_handler.span() =>
+                        r = r.typed_post::<_,_,#path_struct>(#post_handler);
+                    })
+                }
+                if let Some(put_handler) = put_handler {
+                    routes_fn.push(quote_spanned! {
+                        put_handler.span() =>
+                        r = r.typed_put::<_,_,#path_struct>(#put_handler);
+                    })
+                }
+                if let Some(patch_handler) = patch_handler {
+                    routes_fn.push(quote_spanned! {
+                        patch_handler.span() =>
+                        r = r.typed_patch::<_,_,#path_struct>(#patch_handler);
+                    })
+                }
+                if let Some(delete_handler) = delete_handler {
+                    routes_fn.push(quote_spanned! {
+                        delete_handler.span() =>
+                        r = r.typed_delete::<_,_,#path_struct>(#delete_handler);
+                    })
+                }
             },
         );
-        if state.is_some() {
+        if let Some(state) = state {
             tokens.extend(quote_spanned! {
                 name.span() =>
                 #vis struct #name;
                 #[automatically_derived]
                 #[allow(unused_mut)]
+                #[allow(clippy::let_and_return)]
                 impl #name {
                     #vis fn routes() -> ::axum::Router<#state> {
                         let mut r = ::axum::Router::new();
@@ -253,6 +346,7 @@ impl ToTokens for Routes {
                 #vis struct #name;
                 #[automatically_derived]
                 #[allow(unused_mut)]
+                #[allow(clippy::let_and_return)]
                 impl #name {
                     #vis fn routes() -> ::axum::Router {
                         let mut r = ::axum::Router::new();
