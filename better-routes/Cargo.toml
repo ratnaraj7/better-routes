@@ -1,6 +1,6 @@
 [package]
 name = "better-routes"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 description = "A powerful Rust library designed for generating type-safe and maintainable Axum routers."
 license = "MIT"
@@ -12,7 +12,7 @@ categories = ["development-tools"]
 axum = "0.7.5"
 serde = { version = "1.0.204", features = ["derive"] }
 axum-extra = { version = "0.9.3", features = ["typed-routing"] }
-better-routes-macros = { version = "0.2.0", path = "../better-routes-macros" }
+better-routes-macros = { version = "0.3.0", path = "../better-routes-macros" }
 
 [dev-dependencies]
 trybuild = "1.0.98"
