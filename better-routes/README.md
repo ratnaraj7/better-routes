@@ -32,10 +32,10 @@ async fn bar(_: Bar) {}
 routes! {
     name => pub AllRoutes, // Visibility is optional
     "/foo/:id" => Foo {
-        get => Foo
+        get => foo
     },
     "/bar" => Bar {
-        post => Bar
+        post => bar
     },
 }
 
