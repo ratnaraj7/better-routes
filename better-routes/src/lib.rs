@@ -1,17 +1,9 @@
 //! Better Routes
 //!
-//! `better_routes` is a library for generating
-//! [axum](https://github.com/tokio-rs/axum) routers in a type-safe and maintainable way.
-//! It provides a set of macros to define routes and their handlers with strong type
-//! guarantees, making routing easier and less error-prone.
-//!
-//! Key features include:
-//! - **Type-safe routing**: Define routes using [TypedPath](https://docs.rs/axum-extra/latest/axum_extra/routing/trait.TypedPath.html).
-//! - **Automatic handler generation**: Use the [`routes!`] macro to generate the router
-//!   instance and the [`method_helper`] macro to implement the [`MethodHandler`] trait.
-//! - **State management**: Integrate application state seamlessly into your routes.
-//! - **Flexible rejection handling**: Apply global or route-specific rejection handling
-//!   using custom rejection types.
+//! `better_routes` is a macro for centralizing all routes in an Axum application,
+//! making routing type-safe, maintainable, and less error-prone. It allows you to define
+//! routes, their handlers, and rejections in a single place, simplifying your application's
+//! routing logic.
 //!
 //! # Examples
 //!
@@ -20,7 +12,7 @@
 //! # Example
 //!
 //! ```rust,no_run
-//! use better_routes::{routes, method_helper};
+//! use better_routes::routes;
 //! use axum_extra::routing::RouterExt;
 //! use serde::Deserialize;
 //! use axum::{
@@ -73,10 +65,60 @@
 //!     id: usize,
 //! }
 //!
+//! async fn get_product(product: Product) -> Json<String> {
+//!     println!("Product ID: {}", product.id);
+//!     Json(format!("Product ID: {}", product.id))
+//! }
+//!
+//! async fn create_product(product: Product) -> Json<String> {
+//!     println!("Creating product with ID: {}", product.id);
+//!     Json(format!("Created product with ID: {}", product.id))
+//! }
+//!
+//! async fn update_product(product: Product) -> Json<String> {
+//!     println!("Updating product with ID: {}", product.id);
+//!     Json(format!("Updated product with ID: {}", product.id))
+//! }
+//!
+//! async fn delete_product(product: Product) -> Json<String> {
+//!     println!("Deleting product with ID: {}", product.id);
+//!     Json(format!("Deleted product with ID: {}", product.id))
+//! }
+//!
+//! async fn patch_product(product: Product) -> Json<String> {
+//!     println!("Patching product with ID: {}", product.id);
+//!     Json(format!("Patched product with ID: {}", product.id))
+//! }
+//!
 //! // Define a struct for users
 //! #[derive(Deserialize)]
 //! struct User {
 //!     id: usize,
+//! }
+//!
+//! async fn get_user(user: User) -> Json<String> {
+//!     println!("User ID: {}", user.id);
+//!     Json(format!("User ID: {}", user.id))
+//! }
+//!
+//! async fn create_user(user: User) -> Json<String> {
+//!     println!("Creating user with ID: {}", user.id);
+//!     Json(format!("Created user with ID: {}", user.id))
+//! }
+//!
+//! async fn update_user(user: User) -> Json<String> {
+//!     println!("Updating user with ID: {}", user.id);
+//!     Json(format!("Updated user with ID: {}", user.id))
+//! }
+//!
+//! async fn delete_user(user: User) -> Json<String> {
+//!     println!("Deleting user with ID: {}", user.id);
+//!     Json(format!("Deleted user with ID: {}", user.id))
+//! }
+//!
+//! async fn patch_user(user: User) -> Json<String> {
+//!     println!("Patching user with ID: {}", user.id);
+//!     Json(format!("Patched user with ID: {}", user.id))
 //! }
 //!
 //! // Use the `routes!` macro to define routes and associate them with handlers and rejections
@@ -87,78 +129,20 @@
 //!     name => pub AllRoutes, // You can also specify visibility for the generated struct
 //!     state => AppState, // Specify application state
 //!     rejection => GlobalRejection, // Apply global rejection handler
-//!     "/product/:id" => Product, // Define route for product
-//!     "/user/:id" => User => UserRejection, // Define route for user with custom rejection
-//! }
-//!
-//! // Implement handlers for the `Product` struct
-//! #[method_helper]
-//! impl Product {
-//!     #[get]
-//!     async fn get_product(self) -> Json<String> {
-//!         // Print the ID to the console
-//!         println!("Product ID: {}", self.id);
-//!         // Return a response with the ID
-//!         Json(format!("Product ID: {}", self.id))
-//!     }
-//!
-//!     #[post]
-//!     async fn create_product(self) -> Json<String> {
-//!         println!("Creating product with ID: {}", self.id);
-//!         Json(format!("Created product with ID: {}", self.id))
-//!     }
-//!
-//!     #[put]
-//!     async fn update_product(self) -> Json<String> {
-//!         println!("Updating product with ID: {}", self.id);
-//!         Json(format!("Updated product with ID: {}", self.id))
-//!     }
-//!
-//!     #[delete]
-//!     async fn delete_product(self) -> Json<String> {
-//!         println!("Deleting product with ID: {}", self.id);
-//!         Json(format!("Deleted product with ID: {}", self.id))
-//!     }
-//!
-//!     #[patch]
-//!     async fn patch_product(self) -> Json<String> {
-//!         println!("Patching product with ID: {}", self.id);
-//!         Json(format!("Patched product with ID: {}", self.id))
-//!     }
-//! }
-//!
-//! // Implement handlers for the `User` struct
-//! #[method_helper]
-//! impl User {
-//!     #[get]
-//!     async fn get_user(self) -> Json<String> {
-//!         println!("User ID: {}", self.id);
-//!         Json(format!("User ID: {}", self.id))
-//!     }
-//!
-//!     #[post]
-//!     async fn create_user(self) -> Json<String> {
-//!         println!("Creating user with ID: {}", self.id);
-//!         Json(format!("Created user with ID: {}", self.id))
-//!     }
-//!
-//!     #[put]
-//!     async fn update_user(self) -> Json<String> {
-//!         println!("Updating user with ID: {}", self.id);
-//!         Json(format!("Updated user with ID: {}", self.id))
-//!     }
-//!
-//!     #[delete]
-//!     async fn delete_user(self) -> Json<String> {
-//!         println!("Deleting user with ID: {}", self.id);
-//!         Json(format!("Deleted user with ID: {}", self.id))
-//!     }
-//!
-//!     #[patch]
-//!     async fn patch_user(self) -> Json<String> {
-//!         println!("Patching user with ID: {}", self.id);
-//!         Json(format!("Patched user with ID: {}", self.id))
-//!     }
+//!     "/product/:id" => Product{
+//!         get => get_product, // Define route for getting product
+//!         post => create_product, // Define route for creating product
+//!         put => update_product, // Define route for updating product
+//!         patch => patch_product, // Define route for patching product
+//!         delete => delete_product, // Define route for deleting product
+//!     },
+//!     "/user/:id" => rejection UserRejection => User{
+//!         get => get_user, // Define route for getting user
+//!         post => create_user, // Define route for creating user
+//!         put => update_user, // Define route for updating user
+//!         patch => patch_user, // Define route for patching user
+//!         delete => delete_user, // Define route for deleting user
+//!     },
 //! }
 //!
 //! #[tokio::main]
@@ -177,36 +161,6 @@
 //! For more information, see the [documentation](https://docs.rs/better_routes).
 //! Contributions and feedback are welcome on [GitHub](https://github.com/ratnaraj7/better-routes).
 
-/// A macro for implementing the [`MethodHandlers`] trait.
-///
-/// # Example
-/// ```rust
-/// use better_routes::method_helper;
-/// use serde::Deserialize;
-///
-/// #[derive(Deserialize)]
-/// struct Home;
-///
-/// #[method_helper]
-/// impl Home {
-///     #[get]
-///     async fn get_(self) {}
-///
-///     #[post]
-///     async fn create_(self) {}
-///
-///     #[put]
-///     async fn update_(self) {}
-///
-///     #[delete]
-///     async fn delete_(self) {}
-///
-///     #[patch]
-///     async fn patch_(self) {}
-/// }
-/// ```
-pub use better_routes_macros::method_helper;
-
 /// Define routes using the [`routes!`] macro.
 ///
 /// The [`routes!`] macro generates a struct, using the name provided, such as `AllRoutes` below,
@@ -214,13 +168,10 @@ pub use better_routes_macros::method_helper;
 /// `Router` instance configured with the routes defined in the macro.
 /// You can control the visibility of the generated struct and methods using
 /// visibility modifiers.
-/// Every typed path used in the routes must implement the [`MethodHandlers`] trait,
-/// which is facilitated by the [`method_helper`] macro.
-/// Implementing `MethodHandlers` manually is not recommended.
 ///
 /// # Example
 /// ```rust
-/// use better_routes::{routes, method_helper};
+/// use better_routes::routes;
 /// use axum::{
 ///     Router,
 ///     http::StatusCode
@@ -231,16 +182,14 @@ pub use better_routes_macros::method_helper;
 /// #[derive(Deserialize)]
 /// struct Home;
 ///
+/// async fn index(_: Home) {}
+///
 /// // Define routes and associate them with handlers
 /// routes! {
 ///     name => pub AllRoutes, // This makes `AllRoutes` public
-///     "/" => Home,
-/// }
-///
-/// #[method_helper]
-/// impl Home {
-///     #[get]
-///     async fn index(self) {}
+///     "/" => Home{
+///         get => index
+///     },
 /// }
 ///
 /// #[tokio::main]
@@ -253,7 +202,7 @@ pub use better_routes_macros::method_helper;
 ///
 /// # With State
 /// ```rust
-/// use better_routes::{routes, method_helper};
+/// use better_routes::routes;
 /// use axum::{
 ///     Router
 /// };
@@ -263,6 +212,8 @@ pub use better_routes_macros::method_helper;
 /// #[derive(Deserialize)]
 /// struct Home;
 ///
+/// async fn index(_: Home) {}
+///
 /// #[derive(Clone)]
 /// struct AppState;
 ///
@@ -270,13 +221,9 @@ pub use better_routes_macros::method_helper;
 /// routes! {
 ///     name => AllRoutes,
 ///     state => AppState,
-///     "/" => Home
-/// }
-///
-/// #[method_helper]
-/// impl Home {
-///     #[get]
-///     async fn index(self) {}
+///     "/" => Home {
+///         get => index
+///     }
 /// }
 ///
 /// #[tokio::main]
@@ -289,7 +236,7 @@ pub use better_routes_macros::method_helper;
 ///
 /// # With Global Rejection
 /// ```rust
-/// use better_routes::{routes, method_helper};
+/// use better_routes::routes;
 /// use axum::{
 ///     Router,
 ///     http::StatusCode,
@@ -303,6 +250,8 @@ pub use better_routes_macros::method_helper;
 /// struct Home {
 ///     id: usize
 /// }
+///
+/// async fn index(_: Home) {}
 ///
 /// struct GlobalRejection;
 ///
@@ -322,13 +271,9 @@ pub use better_routes_macros::method_helper;
 /// routes! {
 ///     name => AllRoutes,
 ///     rejection => GlobalRejection,
-///     "/:id" => Home
-/// }
-///
-/// #[method_helper]
-/// impl Home {
-///     #[get]
-///     async fn index(self) {}
+///     "/:id" => Home {
+///         get => index
+///     }
 /// }
 ///
 /// #[tokio::main]
@@ -341,7 +286,7 @@ pub use better_routes_macros::method_helper;
 ///
 /// # With Route-Specific Rejection
 /// ```rust
-/// use better_routes::{routes, method_helper};
+/// use better_routes::routes;
 /// use axum::{
 ///     Router,
 ///     http::StatusCode,
@@ -355,6 +300,8 @@ pub use better_routes_macros::method_helper;
 /// struct Home {
 ///     id: usize
 /// }
+///
+/// async fn index(_: Home) {}
 ///
 /// struct HomeRejection;
 ///
@@ -373,13 +320,9 @@ pub use better_routes_macros::method_helper;
 /// // Define routes and specify route-specific rejection handling
 /// routes! {
 ///     name => AllRoutes,
-///     "/:id" => Home => HomeRejection
-/// }
-///
-/// #[method_helper]
-/// impl Home {
-///     #[get]
-///     async fn index(self) {}
+///     "/:id" => rejection HomeRejection => Home {
+///         get => index
+///     }
 /// }
 ///
 /// #[tokio::main]
@@ -390,11 +333,3 @@ pub use better_routes_macros::method_helper;
 /// }
 /// ```
 pub use better_routes_macros::routes;
-
-/// The [`MethodHandlers`] trait defines a list of HTTP methods that a route can handle.
-///
-/// Note: Instead of implementing it directly, you should use the [`method_helper`]
-/// macro to generate the necessary implementations.
-pub trait MethodHandlers {
-    const METHODS: &'static [axum::http::Method];
-}
