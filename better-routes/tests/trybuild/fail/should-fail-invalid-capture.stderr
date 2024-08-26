@@ -1,5 +1,5 @@
 error[E0026]: struct `Foo` does not have a field named `id`
-  --> tests/trybuild/fail/should-fail-invalid-capture.rs:10:5
-   |
-10 |     "/:id" => Foo
-   |     ^^^^^^ struct `Foo` does not have this field
+ --> tests/trybuild/fail/should-fail-invalid-capture.rs:9:5
+  |
+9 |     "/:id" => Foo {
+  |     ^^^^^^ struct `Foo` does not have this field

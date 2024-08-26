@@ -1,30 +1,6 @@
 # Better Routes
 
-`better_routes` is a Rust library that makes routing in `axum` applications a breeze. With easy-to-use macros, you can create typed paths and quickly link methods to those paths, making your route setup both simple and type-safe.
-
-## Key Features
-
-- **Centralized Routing**:
-  - Define and manage all your routes in a centralized manner using the `routes!` macro.
-  - Simplifies route configuration by keeping all route definitions in one place.
-- **Typed Paths**:
-  - Use `axum_extra::routing::TypedPath` with the `typed-routing` feature enabled to type your paths, ensuring type safety and consistency.
-  - Generate URIs directly from these type definitions.
-- **Method Handlers**:
-  - The `method_helper` macro generates `MethodHandler` implementations for your typed paths, linking them to their respective handlers and reducing the risk of errors.
-  - Create route handlers easily with method annotations.
-
-Installation
-------------
-
-To install `better-routes` and the other required dependencies, run:
-
-```sh
-cargo add better-routes
-cargo add axum
-cargo add axum-extra --features typed-routing
-cargo add serde --features derive
-```
+`better_routes` is a macro for centralizing all routes in an Axum application, making routing type-safe, maintainable, and less error-prone. It allows you to define routes, their handlers, and rejections in a single place, simplifying your application's routing logic.
 
 ## Usage
 
@@ -35,7 +11,6 @@ Here’s a simple example demonstrating how to use `better_routes`.
 ```rust
 use axum_extra::routing::RouterExt;
 use axum_extra::routing::TypedPath;
-use better_routes::method_helper;
 use better_routes::routes;
 use serde::Deserialize;
 
@@ -44,37 +19,24 @@ struct Foo {
     id : usize
 }
 
+async fn foo(foo_path: Foo) {
+    println!("id: {}", foo_path.id);
+}
+
 #[derive(Deserialize)]
 struct Bar;
 
+async fn bar(_: Bar) {}
+
 // Define routes using the `routes!` macro.
-// Note: `MethodHandlers` is required for typed path structs,
-// and can be implemented using the `#[method_helper]` macro.
-// Without this implementation, the `routes!` macro will panic.
 routes! {
     name => pub AllRoutes, // Visibility is optional
-    "/foo/:id" => Foo,
-    "/bar" => Bar,
-}
-
-// Use the `method_helper` macro to implement `MethodHandlers`
-// for the `Foo` struct.
-#[method_helper]
-impl Foo {
-    #[get]
-    #[allow(unused)]
-    async fn foo(self) {
-        println!("id: {}", self.id);
-    }
-}
-
-// Use the `method_helper` macro to implement `MethodHandlers`
-// for the `Bar` struct.
-#[method_helper]
-impl Bar {
-    #[post]
-    #[allow(unused)]
-    async fn bar(self) {}
+    "/foo/:id" => Foo {
+        get => Foo
+    },
+    "/bar" => Bar {
+        post => Bar
+    },
 }
 
 #[tokio::main]
@@ -94,12 +56,6 @@ async fn main() {
     axum::serve(tcp_listener, app).await.unwrap();
 }
 ```
-
-### Explanation
-
-- **`routes!` Macro**: Maps URL paths to structs for route handling and supports type-safe URI generation.
-- **`method_helper` Macro**: Implements `MethodHandler` for structs with `#[method_helper]`.
-
 ## Documentation
 
 For more advanced usage, including state and rejection handling, please refer to the full [documentation][docs] or explore additional [examples][examples] provided in the codebase.

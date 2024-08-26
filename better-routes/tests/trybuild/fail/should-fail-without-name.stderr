@@ -1,7 +1,0 @@
-error: unexpected end of input, expected `name`
- --> tests/trybuild/fail/should-fail-without-name.rs:2:1
-  |
-2 | routes! {}
-  | ^^^^^^^^^^
-  |
-  = note: this error originates in the macro `routes` (in Nightly builds, run with -Z macro-backtrace for more info)

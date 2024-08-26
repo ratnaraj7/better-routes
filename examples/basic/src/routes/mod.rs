@@ -6,8 +6,8 @@ use better_routes::routes;
 
 use crate::AppState;
 
-use self::handlers::api::{Todo, TodoWithId};
-use self::handlers::pages::Home;
+use self::handlers::api::{create_todo, delete_todo, update_todo, Todo, TodoWithId};
+use self::handlers::pages::{index, Home};
 
 mod handlers;
 
@@ -30,7 +30,14 @@ routes! {
     name => pub AllRoutes,
     state => AppState,
     rejection => GlobalRejection,
-    "/" => Home,
-    "/api/todo" => Todo,
-    "/api/todo/:id" => TodoWithId,
+    "/" => Home{
+        get => index
+    },
+    "/api/todo" => Todo {
+        post => create_todo
+    },
+    "/api/todo/:id" => TodoWithId {
+        put => update_todo,
+        delete => delete_todo,
+    },
 }

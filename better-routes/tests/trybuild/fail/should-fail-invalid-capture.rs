@@ -1,12 +1,13 @@
 use axum_extra::routing::RouterExt;
-use better_routes::{method_helper, routes};
+use better_routes::routes;
 use serde::Deserialize;
 #[derive(Deserialize)]
 struct Foo;
-#[method_helper]
-impl Foo {}
+async fn get(_: Foo) {}
 routes! {
-    name => FooPath,
-    "/:id" => Foo
+    name => AllRoutes,
+    "/:id" => Foo {
+        get => get
+    }
 }
 fn main() {}
