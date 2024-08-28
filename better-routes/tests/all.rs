@@ -310,33 +310,3 @@ async fn should_capture_wildcard() {
     let body = post_res.into_body().collect().await.unwrap().to_bytes();
     assert_eq!(&body[..], b"hello/world");
 }
-
-#[tokio::test]
-async fn all() {
-    #[derive(Deserialize)]
-    struct Home {
-        id: usize,
-        rest: String,
-    }
-
-    async fn get_some(_: About) {}
-    async fn get_som(_: Home) {}
-
-    #[derive(Deserialize)]
-    struct About;
-
-    async fn get_about(_: About) {}
-
-    routes! {
-        name => AllRoutes,
-        "/:id/*rest" => Home {
-            get => get_som,
-            post => get_som
-        },
-        "/about" => About {
-            get => get_about
-        },
-    }
-
-    let _r = AllRoutes::routes();
-}

@@ -15,8 +15,8 @@ use better_routes::routes;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-struct Foo { 
-    id : usize
+struct Foo {
+    id: usize,
 }
 
 async fn foo(foo_path: Foo) {

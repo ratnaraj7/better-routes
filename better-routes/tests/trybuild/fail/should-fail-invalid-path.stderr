@@ -1,0 +1,24 @@
+error[E0277]: the trait bound `(axum_core::extract::private::ViaParts, About): SecondElementIs<Home>` is not satisfied
+  --> tests/trybuild/fail/should-fail-invalid-path.rs:12:16
+   |
+12 |         get => about,
+   |                ^^^^^ the trait `SecondElementIs<Home>` is not implemented for `(axum_core::extract::private::ViaParts, About)`
+   |
+   = help: the following other types implement trait `SecondElementIs<P>`:
+             (M, P)
+             (M, P, T1)
+             (M, P, T1, T2)
+             (M, P, T1, T2, T3)
+             (M, P, T1, T2, T3, T4)
+             (M, P, T1, T2, T3, T4, T5)
+             (M, P, T1, T2, T3, T4, T5, T6)
+             (M, P, T1, T2, T3, T4, T5, T6, T7)
+           and $N others
+note: required by a bound in `typed_get`
+  --> $CARGO/axum-extra-0.9.3/src/routing/mod.rs
+   |
+   |     fn typed_get<H, T, P>(self, handler: H) -> Self
+   |        --------- required by a bound in this associated function
+...
+   |         T: SecondElementIs<P> + 'static,
+   |            ^^^^^^^^^^^^^^^^^^ required by this bound in `RouterExt::typed_get`

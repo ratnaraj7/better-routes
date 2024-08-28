@@ -12,16 +12,12 @@
 //! # Example
 //!
 //! ```rust,no_run
-//! use better_routes::routes;
-//! use axum_extra::routing::RouterExt;
-//! use serde::Deserialize;
 //! use axum::{
-//!     Router,
-//!     Json,
-//!     http::StatusCode,
-//!     response::IntoResponse,
-//!     extract::rejection::PathRejection,
+//!     extract::rejection::PathRejection, http::StatusCode, response::IntoResponse, Json, Router,
 //! };
+//! use axum_extra::routing::RouterExt;
+//! use better_routes::routes;
+//! use serde::Deserialize;
 //!
 //! // Define a custom rejection type for handling global rejections
 //! struct GlobalRejection;
@@ -57,7 +53,7 @@
 //!
 //! // Define application state struct
 //! #[derive(Clone)]
-//! struct AppState;
+//! pub struct AppState;
 //!
 //! // Define a struct for products
 //! #[derive(Deserialize)]
@@ -171,12 +167,9 @@
 ///
 /// # Example
 /// ```rust
-/// use better_routes::routes;
-/// use axum::{
-///     Router,
-///     http::StatusCode
-/// };
+/// use axum::Router;
 /// use axum_extra::routing::RouterExt;
+/// use better_routes::routes;
 /// use serde::Deserialize;
 ///
 /// #[derive(Deserialize)]
@@ -202,11 +195,9 @@
 ///
 /// # With State
 /// ```rust
-/// use better_routes::routes;
-/// use axum::{
-///     Router
-/// };
+/// use axum::Router;
 /// use axum_extra::routing::RouterExt;
+/// use better_routes::routes;
 /// use serde::Deserialize;
 ///
 /// #[derive(Deserialize)]
@@ -236,14 +227,14 @@
 ///
 /// # With Global Rejection
 /// ```rust
-/// use better_routes::routes;
 /// use axum::{
-///     Router,
+///     extract::rejection::PathRejection,
 ///     http::StatusCode,
 ///     response::{IntoResponse, Response},
-///     extract::rejection::PathRejection
+///     Router,
 /// };
 /// use axum_extra::routing::RouterExt;
+/// use better_routes::routes;
 /// use serde::Deserialize;
 ///
 /// #[derive(Deserialize)]
@@ -286,14 +277,14 @@
 ///
 /// # With Route-Specific Rejection
 /// ```rust
-/// use better_routes::routes;
 /// use axum::{
-///     Router,
+///     extract::rejection::PathRejection,
 ///     http::StatusCode,
 ///     response::{IntoResponse, Response},
-///     extract::rejection::PathRejection
+///     Router,
 /// };
 /// use axum_extra::routing::RouterExt;
+/// use better_routes::routes;
 /// use serde::Deserialize;
 ///
 /// #[derive(Deserialize)]
