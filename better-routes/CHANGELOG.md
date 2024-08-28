@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.3.1...better-routes-v0.3.2) - 2024-08-28
+
+### Other
+- update import order and fix formatting issues
+- add invalid path test
+- remove unnecessary test
+
 ## [0.3.1](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.3.0...better-routes-v0.3.1) - 2024-08-26
 
 ### Other
