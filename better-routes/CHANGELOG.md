@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.3.2...better-routes-v0.3.3) - 2024-08-29
+
+### Fixed
+- move dependencies to dev-dependencies
+
+### Other
+- Merge branch 'main' into dev
+
 ## [0.3.2](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.3.1...better-routes-v0.3.2) - 2024-08-28
 
 ### Other
