@@ -21,3 +21,4 @@ note: required by a bound in `typed_get`
    |        --------- required by a bound in this associated function
 ...
    |         T: SecondElementIs<P> + 'static,
+   |            ^^^^^^^^^^^^^^^^^^ required by this bound in `RouterExt::typed_get`
