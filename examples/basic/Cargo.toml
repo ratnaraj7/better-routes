@@ -10,6 +10,6 @@ axum-extra = { version = "0.9.3", features = ["typed-routing"] }
 serde = { version = "1.0.204", features = ["derive"] }
 tokio = { version = "1.39.2", features = ["macros", "rt-multi-thread"] }
 better-routes = { path = "../../better-routes" }
-origami-engine = { version = "0.1.0-alpha.1", features = ["axum", "html-escape"] }
 html-escape = "0.2.13"
 tailwind_fuse = { version = "0.3.1", features = ["variant"] }
+origami-engine = { version = "0.1.3-alpha.2", features = ["axum"] }
