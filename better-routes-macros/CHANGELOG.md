@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1](https://github.com/ratnaraj7/better-routes/compare/better-routes-macros-v0.3.0...better-routes-macros-v0.3.1) - 2024-10-03
+
+### Other
+
+- remove unnecessary `quote` macro
+
 ## [0.3.0](https://github.com/ratnaraj7/better-routes/compare/better-routes-macros-v0.2.0...better-routes-macros-v0.3.0) - 2024-08-26
 
 ### Added

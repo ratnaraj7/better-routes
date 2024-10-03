@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.4](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.3.3...better-routes-v0.3.4) - 2024-10-03
+
+### Other
+
+- update test
+- update test
+- update axum
+- update tower
+- change category
+
 ## [0.3.3](https://github.com/ratnaraj7/better-routes/compare/better-routes-v0.3.2...better-routes-v0.3.3) - 2024-08-29
 
 ### Fixed
